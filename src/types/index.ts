@@ -1,8 +1,7 @@
 export interface Question {
     id: number;
     title: string;
-    createdAt: string;
-    options: Option[];
+    options: string[];
 }
 
 export interface Option {
