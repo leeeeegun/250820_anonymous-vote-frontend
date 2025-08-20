@@ -1,8 +1,7 @@
-import {useNavigate, useParams} from "react-router-dom";
-import type {Question} from "../types";
-import {useEffect, useState} from "react";
-import {getQuestion, voteOption} from "../api";
-
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getQuestion, voteOption } from "../api";
+import type { Question } from "../types";
 
 export default function QuestionDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -15,21 +14,21 @@ export default function QuestionDetailPage() {
         }
     }, [id]);
 
-    const handleVote = async (optionIndex: number) => {
+    const handleVote = async (optionId: number) => {
         if (!id) return;
-        await voteOption(Number(id), optionIndex);
+        await voteOption(optionId);
         navigate(`/results/${id}`);
     };
 
-    if (!question) return <div>로딩 중...</div>
+    if (!question) return <div>로딩 중...</div>;
 
     return (
         <div>
             <h1>{question.title}</h1>
             <ul>
-                {question.options.map((opt, idx) => (
-                    <li key={idx}>
-                        <button onClick={() => handleVote(idx)}>{opt}</button>
+                {question.options.map((option) => (
+                    <li key={option.id}>
+                        <button onClick={() => handleVote(option.id)}>{option.content}</button>
                     </li>
                 ))}
             </ul>

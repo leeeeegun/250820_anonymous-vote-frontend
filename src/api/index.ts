@@ -10,6 +10,12 @@ export const getQuestions = async () => {
     return res.data;
 };
 
+// 질문 단일 조회
+export const getQuestion = async (questionId: number) => {
+    const res = await api.get(`/questions/${questionId}`);
+    return res.data;
+};
+
 // 질문 생성
 export const createQuestion = async (title: string) => {
     const res = await api.post('/questions', title);
