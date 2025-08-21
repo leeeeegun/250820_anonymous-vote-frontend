@@ -1,16 +1,16 @@
 export interface Question {
     id: number;
-    title: string;
+    text: string;
     options: Option[];
 }
 
 export interface Option {
     id: number;
-    content: string;
+    text: string;
     votes: number;
 }
 
 export interface QuestionCreateDTO {
-    title: string;
-    options: { content: string }[];
+    text: string;
+    options: { text: string }[];
 }

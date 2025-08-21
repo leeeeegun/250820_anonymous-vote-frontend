@@ -31,9 +31,12 @@ export const addOption = async (questionId: number, content: string) => {
 };
 
 // 투표하기
-export const voteOption = async (questionId: number, optionId: number) => {
-    const res = await api.post(`/questions/${questionId}/vote`, { optionId });
-    return res.data;
+export const voteOption = (questionId: number, optionId: number) => {
+    return api.post(`/questions/${questionId}/vote/${optionId}`);
+};
+
+export const deleteQuestion = (id: number) => {
+    return api.delete(`/questions/${id}`);
 };
 
 // 결과 조회

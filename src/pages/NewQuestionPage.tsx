@@ -1,13 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createQuestion } from "../api";
-import "./NewQuestionPage.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createQuestion } from '../api';
+import { Box, TextField, Button, Typography, IconButton, Alert } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 export default function NewQuestionPage() {
     const navigate = useNavigate();
-    const [title, setTitle] = useState("");
-    const [options, setOptions] = useState(["", ""]); // Start with two empty options
+    const [title, setTitle] = useState('');
+    const [options, setOptions] = useState(['', '']);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
@@ -16,7 +19,7 @@ export default function NewQuestionPage() {
     };
 
     const addOption = () => {
-        setOptions([...options, ""]);
+        setOptions([...options, '']);
     };
 
     const removeOption = (index: number) => {
@@ -31,61 +34,83 @@ export default function NewQuestionPage() {
         setError(null);
 
         if (!title.trim()) {
-            setError("질문 제목을 입력해주세요.");
+            setError('질문 제목을 입력해주세요.');
             return;
         }
         if (options.some(opt => !opt.trim())) {
-            setError("모든 선택지 내용을 입력해주세요.");
+            setError('모든 선택지 내용을 입력해주세요.');
             return;
         }
 
+        setLoading(true);
         try {
-            // The API needs to be adjusted to handle this structure
-            const newQuestion = await createQuestion({ title, options: options.map(o => ({ content: o })) });
-            navigate(`/questions/${newQuestion.id}`);
+            const newQuestion = await createQuestion({ text: title, options: options.filter(o => o.trim() !== '').map(o => ({ text: o })) });
+            navigate(`/questions/${newQuestion.id}`, { state: { fromNewQuestion: true } });
         } catch (err) {
-            console.error("투표 생성에 실패했습니다.", err);
-            setError("투표 생성에 실패했습니다. 다시 시도해 주세요.");
+            console.error('투표 생성에 실패했습니다.', err);
+            setError('투표 생성에 실패했습니다. 다시 시도해 주세요.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="new-question-page">
-            <h1>새로운 투표 만들기</h1>
-            <form onSubmit={handleSubmit} className="new-question-form">
-                <div className="form-group">
-                    <label htmlFor="title">투표 제목</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="예: 오늘 점심 뭐 먹을까요?"
-                    />
-                </div>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                새로운 투표 만들기
+            </Typography>
 
-                <div className="form-group options-group">
-                    <label>선택지</label>
-                    {options.map((option, index) => (
-                        <div key={index} className="form-group">
-                            <input
-                                type="text"
-                                value={option}
-                                onChange={(e) => handleOptionChange(index, e.target.value)}
-                                placeholder={`선택지 ${index + 1}`}
-                            />
-                            {options.length > 2 && (
-                                <button type="button" onClick={() => removeOption(index)} className="remove-option-btn">X</button>
-                            )}
-                        </div>
-                    ))}
-                     <button type="button" onClick={addOption} className="add-option-btn">+ 선택지 추가</button>
-                </div>
+            <TextField
+                id="title"
+                label="투표 제목"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="예: 오늘 점심 뭐 먹을까요?"
+                fullWidth
+                required
+            />
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Typography variant="h6">선택지</Typography>
+                {options.map((option, index) => (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <TextField
+                            label={`선택지 ${index + 1}`}
+                            value={option}
+                            onChange={(e) => handleOptionChange(index, e.target.value)}
+                            fullWidth
+                            required
+                        />
+                        <IconButton
+                            onClick={() => removeOption(index)}
+                            disabled={options.length <= 2}
+                            color="error"
+                        >
+                            <RemoveCircleOutlineIcon />
+                        </IconButton>
+                    </Box>
+                ))}
+                <Button
+                    type="button"
+                    onClick={addOption}
+                    startIcon={<AddCircleOutlineIcon />}
+                    variant="outlined"
+                    sx={{ alignSelf: 'flex-start' }}
+                >
+                    선택지 추가
+                </Button>
+            </Box>
 
-                <button type="submit" className="submit-btn">투표 생성하기</button>
-            </form>
-        </div>
+            {error && <Alert severity="error">{error}</Alert>}
+
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                <Button variant="outlined" onClick={() => navigate(-1)}>
+                    뒤로 가기
+                </Button>
+                <Button type="submit" variant="contained" size="large" disabled={loading}>
+                    {loading ? '생성 중...' : '투표 생성하기'}
+                </Button>
+            </Box>
+        </Box>
     );
 }
