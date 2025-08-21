@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8888/api',
+    baseURL: '/api',
 });
 
 // 질문 조회
@@ -16,9 +16,11 @@ export const getQuestion = async (questionId: number) => {
     return res.data;
 };
 
+import type { QuestionCreateDTO } from "../types";
+
 // 질문 생성
-export const createQuestion = async (title: string) => {
-    const res = await api.post('/questions', title);
+export const createQuestion = async (questionData: QuestionCreateDTO) => {
+    const res = await api.post('/questions', questionData);
     return res.data;
 };
 
@@ -29,8 +31,8 @@ export const addOption = async (questionId: number, content: string) => {
 };
 
 // 투표하기
-export const voteOption = async (optionId: number) => {
-    const res = await api.post(`/questions/${optionId}/vote`);
+export const voteOption = async (questionId: number, optionId: number) => {
+    const res = await api.post(`/questions/${questionId}/vote`, { optionId });
     return res.data;
 };
 

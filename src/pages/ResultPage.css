@@ -1,0 +1,39 @@
+.result-page h1 {
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+}
+
+.results-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.result-item {
+    margin-bottom: 1.5rem;
+}
+
+.result-item-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.result-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.result-bar {
+    height: 2rem;
+    background-color: var(--secondary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: width 0.5s ease-in-out;
+}

@@ -1,0 +1,32 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin-bottom: 0;
+    font-size: 2.5rem;
+}
+
+.create-poll-btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.create-poll-btn:hover {
+    background-color: #357abd;
+    text-decoration: none;
+}
+
+.question-list {
+    display: flex;
+    flex-direction: column;
+}

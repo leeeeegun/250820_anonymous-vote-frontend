@@ -9,3 +9,8 @@ export interface Option {
     content: string;
     votes: number;
 }
+
+export interface QuestionCreateDTO {
+    title: string;
+    options: { content: string }[];
+}
